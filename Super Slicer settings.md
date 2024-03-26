@@ -59,39 +59,20 @@ This G-code macro for
 - set pressure advance for extrusion roles. Calculated from filament variable `pressure_advance`
 ```
 {if layer_num == 1}
-    {if extrusion_role == "TopSolidInfill" or 
-        extrusion_role == "SolidInfill" or 
-        extrusion_role == "WipeTower" or
+    {if extrusion_role == "WipeTower" or
         extrusion_role == "SupportMaterial" or
         extrusion_role == "SupportMaterialInterface"
     }
         SET_PRESSURE_ADVANCE ADVANCE=0
     {elsif extrusion_role == "Perimeter" or
-           extrusion_role == ExternalPerimeter
+           extrusion_role == "ExternalPerimeter"
     }
-        SET_PRESSURE_ADVANCE ADVANCE={pressure_advance * 0.6}
-    {endif}
-
-    {if last_extrusion_role == "TopSolidInfill" or 
-           last_extrusion_role == "SolidInfill" or 
-           last_extrusion_role == "WipeTower" or
-           last_extrusion_role == "SupportMaterial" or
-           last_extrusion_role == "SupportMaterialInterface" or
-           last_extrusion_role == "Perimeter"
-    }
-        SET_PRESSURE_ADVANCE ADVANCE={pressure_advance}
+        SET_PRESSURE_ADVANCE ADVANCE={pressure_advance * 0.8}
+    {else}
+        SET_PRESSURE_ADVANCE ADVANCE={pressure_advance * 0.5}
     {endif}
 {else}
-    {if last_extrusion_role == "SolidInfill" or 
-           last_extrusion_role == "GapFill" or 
-           last_extrusion_role == "WipeTower" or
-           last_extrusion_role == "SupportMaterial" or
-           last_extrusion_role == "SupportMaterialInterface" or
-           last_extrusion_role == "Perimeter" or
-           last_extrusion_role == "InternalInfill"
-    }        
-        SET_PRESSURE_ADVANCE ADVANCE={pressure_advance}
-    {endif}
+    SET_PRESSURE_ADVANCE ADVANCE={pressure_advance} SMOOTH_TIME=0.04
 
     {if extrusion_role == "SolidInfill" or 
         extrusion_role == "GapFill" or 
@@ -101,9 +82,9 @@ This G-code macro for
     }
         SET_PRESSURE_ADVANCE ADVANCE=0
     {elsif extrusion_role == "Perimeter"}
-        SET_PRESSURE_ADVANCE ADVANCE={pressure_advance * 0.6}
+        SET_PRESSURE_ADVANCE ADVANCE={pressure_advance * 0.8} SMOOTH_TIME=0.04
     {elsif extrusion_role == "InternalInfill"}
-        SET_PRESSURE_ADVANCE ADVANCE={pressure_advance * 0.5}
+        SET_PRESSURE_ADVANCE ADVANCE={pressure_advance * 0.7} SMOOTH_TIME=0.05
     {endif}
 {endif}
 ```
